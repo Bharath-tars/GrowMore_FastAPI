@@ -171,3 +171,9 @@ def delete_item(category: str, item_name: str, token: str = Depends(oauth2_schem
         return {"message": f"Item '{item_name}' in category '{category}' deleted successfully"}
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+
+
+#root
+@app.get("/")
+async def root():
+    return {"message": "Hey!! Welcome to the Waffle Stores FastAPI backend by Bluorigin Team"}
