@@ -77,13 +77,21 @@ def display_inventory():
     return inventory
 
 
-#add sales
+# #add sales
+# @app.post("/add_sales")
+# def add_sales(sales: Sales, token: str = Depends(oauth2_scheme)):
+#     ref = db.reference("sales")
+#     sales.datetime = datetime.utcnow().isoformat()
+#     ref.push(sales.dict())
+#     return {"message": "Sales record added successfully"}
+
 @app.post("/add_sales")
-def add_sales(sales: Sales, token: str = Depends(oauth2_scheme)):
+def add_sales(sales: List[Sales], token: str = Depends(oauth2_scheme)):
     ref = db.reference("sales")
-    sales.datetime = datetime.utcnow().isoformat()
-    ref.push(sales.dict())
-    return {"message": "Sales record added successfully"}
+    for sale in sales:
+        sale.datetime = datetime.utcnow().isoformat()  # Add timestamp if not provided
+        ref.push(sale.dict())
+    return {"message": f"{len(sales)} sales records added successfully"}
 
 
 #total sales
