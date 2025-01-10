@@ -44,6 +44,14 @@ ADMIN_CREDENTIALS = {"admin": "password123"}
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows selected origins only
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all HTTP methods
+    allow_headers=["*"],  # Allows all headers
+)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 #login
