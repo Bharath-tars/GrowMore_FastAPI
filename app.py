@@ -23,9 +23,9 @@ if not firebase_admin._apps:
         'databaseURL': FIREBASE_DB_URL
     })
 
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+# SECRET_KEY = "your_secret_key"
+# ALGORITHM = "HS256"
+# ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 class Item(BaseModel):
     category: str
@@ -37,11 +37,11 @@ class Sales(BaseModel):
     quantity: int
     datetime: Optional[str] = None
 
-class Admin(BaseModel):
-    username: str
-    password: str
+# class Admin(BaseModel):
+#     username: str
+#     password: str
 
-ADMIN_CREDENTIALS = {"admin": "password123"}
+# ADMIN_CREDENTIALS = {"admin": "password123"}
 
 app = FastAPI()
 
@@ -53,22 +53,22 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-#login
-@app.post("/token")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    username = form_data.username
-    password = form_data.password
-    if username!="admin" or password!="password123":
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token = 1234567890
-    return {"access_token": access_token, "token_type": "bearer"}
+# #login
+# @app.post("/token")
+# def login(form_data: OAuth2PasswordRequestForm = Depends()):
+#     username = form_data.username
+#     password = form_data.password
+#     if username!="admin" or password!="password123":
+#         raise HTTPException(status_code=400, detail="Incorrect username or password")
+#     access_token = 1234567890
+#     return {"access_token": access_token, "token_type": "bearer"}
 
 
 #add item
 @app.post("/add_item")
-def add_item(items: List[Item], token: str = Depends(oauth2_scheme)):
+def add_item(items: List[Item]):
     ref = db.reference("inventory")
     for item in items:
         category_ref = ref.child(item.category)
@@ -95,7 +95,7 @@ def display_inventory():
 #     return {"message": "Sales record added successfully"}
 
 @app.post("/add_sales")
-def add_sales(sales: List[Sales], token: str = Depends(oauth2_scheme)):
+def add_sales(sales: List[Sales]):
     ref = db.reference("sales")
     for sale in sales:
         sale.datetime = datetime.utcnow().isoformat()  # Add timestamp if not provided
@@ -181,7 +181,7 @@ def total_sales_by_date(date: str):
 
 #delete item
 @app.delete("/delete_item")
-def delete_item(category: str, item_name: str, token: str = Depends(oauth2_scheme)):
+def delete_item(category: str, item_name: str):
     ref = db.reference(f"inventory/{category}/{item_name}")
     if ref.get():
         ref.delete()
